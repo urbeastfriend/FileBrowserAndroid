@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/featurePickerFragment">
+
+    <fragment
+        android:id="@+id/filesBrowserFragment"
+        android:name="com.example.filebrowserandroid.ui.filebrowser.FilesBrowserFragment"
+        android:label="fragment_files_browser"
+        tools:layout="@layout/fragment_files_browser" >
+        <action
+            android:id="@+id/action_filesBrowserFragment_self"
+            app:destination="@id/filesBrowserFragment" />
+        <argument
+            android:name="filePath"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/featurePickerFragment"
+        android:name="com.example.filebrowserandroid.ui.featurepicker.FeaturePickerFragment"
+        android:label="fragment_feature_picker"
+        tools:layout="@layout/fragment_feature_picker" >
+        <action
+            android:id="@+id/action_featurePickerFragment_to_filesBrowserFragment"
+            app:destination="@id/filesBrowserFragment" />
+        <action
+            android:id="@+id/action_featurePickerFragment_to_modifiedFilesList"
+            app:destination="@id/modifiedFilesList" />
+    </fragment>
+    <fragment
+        android:id="@+id/modifiedFilesList"
+        android:name="com.example.filebrowserandroid.ui.modifiedfileslist.ModifiedFilesListFragment"
+        android:label="fragment_modified_files_list"
+        tools:layout="@layout/fragment_modified_files_list" />
+</navigation>
