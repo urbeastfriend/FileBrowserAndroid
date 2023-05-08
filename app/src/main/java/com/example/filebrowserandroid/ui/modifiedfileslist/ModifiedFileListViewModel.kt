@@ -5,6 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ModifiedFilesListViewModel @Inject constructor() : ViewModel() {
+class ModifiedFileListViewModel @Inject constructor() : ViewModel() {
 
 }

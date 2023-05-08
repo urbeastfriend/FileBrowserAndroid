@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/filesBrowserFragment"
-        android:name="com.example.filebrowserandroid.ui.filebrowser.FilesBrowserFragment"
+        android:name="com.example.filebrowserandroid.ui.filebrowser.FileBrowserFragment"
         android:label="fragment_files_browser"
         tools:layout="@layout/fragment_files_browser" >
         <action
@@ -15,7 +15,8 @@
             app:destination="@id/filesBrowserFragment" />
         <argument
             android:name="filePath"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/featurePickerFragment"
@@ -31,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/modifiedFilesList"
-        android:name="com.example.filebrowserandroid.ui.modifiedfileslist.ModifiedFilesListFragment"
+        android:name="com.example.filebrowserandroid.ui.modifiedfileslist.ModifiedFileListFragment"
         android:label="fragment_modified_files_list"
         tools:layout="@layout/fragment_modified_files_list" />
 </navigation>

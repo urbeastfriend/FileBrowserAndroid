@@ -3,4 +3,15 @@
 
     <string name="featureFileBrowserBtnText">Файловый менеджер</string>
     <string name="featureModifiedFilesBtnText">Изменённые файлы</string>
+
+
+
+
+
+
+
+
+    <string name="baseDirectoryFormatted">Внутренний общий накопитель</string>
+    <string name="directoryIsNullOrEmpty">Директория пустая</string>
+    <string name="noFilesFound">Файлы не найдены</string>
 </resources>

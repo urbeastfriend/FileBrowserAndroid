@@ -1,9 +1,10 @@
 package com.example.filebrowserandroid.common
 
-class FileInfo (
+import java.io.File
+
+data class FileInfo (
     val fileName: String,
     val filePath: String,
     val dateCreated: String,
-    val fileSize: String,
-    val fileHash: String = ""
+    val fileSize: Long
 )
