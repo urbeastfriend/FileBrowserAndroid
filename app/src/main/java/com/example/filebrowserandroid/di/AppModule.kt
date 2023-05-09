@@ -1,6 +1,7 @@
 package com.example.filebrowserandroid.di
 
 import android.app.Application
+import android.os.Environment
 import androidx.room.Room
 import com.example.filebrowserandroid.data.FilesDatabase
 import dagger.Module
@@ -24,4 +25,7 @@ class AppModule {
 
     @Provides
     fun provideFilesHashDao(db: FilesDatabase) = db.filesHashDao()
+
+    @Provides
+    fun provideStoragePath() = Environment.getExternalStorageDirectory().path
 }

@@ -1,4 +1,4 @@
-package com.example.filebrowserandroid
+package com.example.filebrowserandroid.ui.mainactivity
 
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,6 +14,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.work.*
+import com.example.filebrowserandroid.R
 import dagger.hilt.android.AndroidEntryPoint
 
 const val STORAGE_PERMISSION_CODE: Int = 100
@@ -26,13 +28,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if(checkPermission()){
+        if (checkPermission()) {
             // permissions already granted
-        }
-        else{
+
+        } else {
             // permissions werent granted
             requestPermission()
         }
+
+
+
+        FileHashesWorker.start(applicationContext)
+
     }
 
     private fun requestPermission() {
@@ -71,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                     // Android R(11) or above
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         // Manage external storage permission granted
-                        if(Environment.isExternalStorageManager()){
+                        if (Environment.isExternalStorageManager()) {
 
                         }
                         // Manage external storage permission denied
@@ -80,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     // Below Android R(11)
-                    else{
+                    else {
 
                     }
                 }
@@ -96,21 +103,21 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if(requestCode == STORAGE_PERMISSION_CODE){
-        if(grantResults.isNotEmpty()){
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty()) {
 
-            // check each permission if granted or not
-            val write = grantResults[0] == PackageManager.PERMISSION_GRANTED
-            val read = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                // check each permission if granted or not
+                val write = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val read = grantResults[1] == PackageManager.PERMISSION_GRANTED
 
-            if(write && read){
-                // External storage permissions granted
-            }
-            else{
-                // External storage permissions denied
+                if (write && read) {
+                    // External storage permissions granted
+                } else {
+                    // External storage permissions denied
+                }
             }
         }
-    }}
+    }
 
     private fun checkPermission(): Boolean {
         // Android R(11) or above

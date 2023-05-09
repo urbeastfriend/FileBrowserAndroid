@@ -5,11 +5,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
-@Entity
+@Entity(tableName = "filehash_table")
 @Parcelize
 class FileHash(
-    val fileName: String,
     val filePath: String,
     val fileHash: String,
-    @PrimaryKey(autoGenerate = true) val id: Int
+    @PrimaryKey(autoGenerate = true) val id: Int = 0
 ) :Parcelable

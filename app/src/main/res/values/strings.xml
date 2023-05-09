@@ -14,4 +14,12 @@
     <string name="couldntOpenFile">Не получилось открыть файл</string>
     <string name="directoryIsNullOrEmpty">Директория пустая</string>
     <string name="noFilesFound">Файлы не найдены</string>
+
+
+    <string name="channel_id">dbUpdateChannel</string>
+    <string name="channel_name">dbUpdateChannel</string>
+    <string name="channel_description">dbUpdateChannel</string>
+
+    <string name="notification_title">Database update</string>
+    <string name="notification_text">Database update in progress</string>
 </resources>
