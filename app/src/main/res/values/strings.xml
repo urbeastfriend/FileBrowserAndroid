@@ -11,7 +11,7 @@
 
 
 
-    <string name="baseDirectoryFormatted">Внутренний общий накопитель</string>
+    <string name="couldntOpenFile">Не получилось открыть файл</string>
     <string name="directoryIsNullOrEmpty">Директория пустая</string>
     <string name="noFilesFound">Файлы не найдены</string>
 </resources>

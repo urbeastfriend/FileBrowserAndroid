@@ -1,22 +1,26 @@
 package com.example.filebrowserandroid.ui.filebrowser
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.filebrowserandroid.BuildConfig
 import com.example.filebrowserandroid.R
 import com.example.filebrowserandroid.common.FileInfo
 import com.example.filebrowserandroid.databinding.FragmentFilesBrowserBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.io.File
+import com.example.filebrowserandroid.common.getMimeType
 
 
 @AndroidEntryPoint
@@ -74,12 +78,23 @@ class FileBrowserFragment : Fragment(R.layout.fragment_files_browser),
                 launch {
                     viewModel.eventChannel.collect { event ->
                         when (event) {
-                            is FileBrowserScreenEvent.NavigateToTextDirectory -> {
-                                val action =
-                                    FileBrowserFragmentDirections.actionFilesBrowserFragmentSelf(
-                                        event.path
+                            is FileBrowserScreenEvent.OpenFile -> {
+                                try{
+                                    val intent = Intent(Intent.ACTION_VIEW)
+                                    val file = File(event.path)
+                                    val uriFromFile = FileProvider.getUriForFile(requireContext(),BuildConfig.APPLICATION_ID +".provider",file)
+                                    intent.setDataAndType(uriFromFile,file.getMimeType())
+                                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    startActivity(intent)
+                                }
+                                catch (e: ActivityNotFoundException){
+                                    Snackbar.make(
+                                        requireView(),
+                                        R.string.couldntOpenFile,
+                                        Snackbar.LENGTH_LONG
                                     )
-                                findNavController().navigate(action)
+                                        .show()
+                                }
                             }
                             is FileBrowserScreenEvent.ShowSnackBarMessage -> {
                                 Snackbar.make(
@@ -88,6 +103,13 @@ class FileBrowserFragment : Fragment(R.layout.fragment_files_browser),
                                     Snackbar.LENGTH_LONG
                                 )
                                     .show()
+                            }
+                            is FileBrowserScreenEvent.NavigateToDirectory -> {
+                                val action =
+                                    FileBrowserFragmentDirections.actionFilesBrowserFragmentSelf(
+                                        event.path
+                                    )
+                                findNavController().navigate(action)
                             }
                         }
                     }
@@ -101,7 +123,7 @@ class FileBrowserFragment : Fragment(R.layout.fragment_files_browser),
     }
 
     override fun onFileClick(file: FileInfo) {
-        TODO("Not yet implemented")
+        viewModel.onFileClick(file.filePath)
     }
 }
 

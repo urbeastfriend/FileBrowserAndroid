@@ -6,13 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.filebrowserandroid.common.FileInfoMapper
 import com.example.filebrowserandroid.common.Response
 import com.example.filebrowserandroid.data.FilesHashDao
+import com.example.filebrowserandroid.usecases.CheckPathIsDirectoryUseCase
 import com.example.filebrowserandroid.usecases.GetDirectoryFilesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,8 +21,9 @@ import javax.inject.Inject
 @HiltViewModel
 class FileBrowserViewModel @Inject constructor(
     private val getDirectoryFilesUseCase: GetDirectoryFilesUseCase,
+    private val checkPathIsDirectoryUseCase: CheckPathIsDirectoryUseCase,
     private val fileInfoMapper: FileInfoMapper,
-    private val FilesInfoDao: FilesHashDao,
+    private val fileInfoDao: FilesHashDao,
     private val state: SavedStateHandle
 ) : ViewModel() {
 
@@ -33,6 +34,12 @@ class FileBrowserViewModel @Inject constructor(
     val eventChannel = _eventChannel.receiveAsFlow()
 
     init {
+        val path = state.get<String?>("filePath")
+        path.let {
+            if(!it.isNullOrEmpty()) {
+                _screenState.value = _screenState.value.copy(path = it)
+            }
+        }
         viewModelScope.launch {
             getDirectoryFiles()
         }
@@ -66,6 +73,20 @@ class FileBrowserViewModel @Inject constructor(
                     _screenState.value = _screenState.value.copy(isLoading = true)
                 }
 
+            }
+        }
+    }
+
+
+    fun onFileClick(path: String){
+        if(checkPathIsDirectoryUseCase(path)) {
+            viewModelScope.launch {
+                _eventChannel.send(FileBrowserScreenEvent.NavigateToDirectory(path))
+            }
+        }
+        else{
+            viewModelScope.launch {
+                _eventChannel.send(FileBrowserScreenEvent.OpenFile(path))
             }
         }
     }

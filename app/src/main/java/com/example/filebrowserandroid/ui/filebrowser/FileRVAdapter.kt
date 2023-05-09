@@ -45,13 +45,17 @@ class FileRVAdapter(private val listener: OnFileClickListener) :
 
             if (_file.exists()) {
                 binding.apply {
+                    val viewContext = fileImage.context
                     fileName.text = file.fileName
 
+                    fileDateCreated.text = file.dateCreated
                     if (_file.isDirectory) {
                         fileImage.setImageResource(R.drawable.ic_folder)
                     } else {
+                        val fileSizeText = "${android.text.format.Formatter.formatFileSize(viewContext,file.fileSize)} | "
+                        fileSize.text =  fileSizeText
                         when (_file.extension) {
-                            in Regex("/(gif|jpe?g|tiff?|png|webp|bmp)\$/i") -> {
+                            in Regex("((?i)(gif|png|jpeg|jpg))$") -> {
                                 fileImage.setImageResource(R.drawable.ic_image)
                             }
                             else -> {

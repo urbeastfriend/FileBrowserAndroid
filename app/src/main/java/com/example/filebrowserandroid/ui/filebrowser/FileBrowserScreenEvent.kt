@@ -4,7 +4,9 @@ import com.example.filebrowserandroid.common.StringUiWrapper
 
 sealed class FileBrowserScreenEvent  {
 
-    data class NavigateToTextDirectory(val path:String): FileBrowserScreenEvent()
+    data class OpenFile(val path:String): FileBrowserScreenEvent()
+
+    data class NavigateToDirectory(val path:String): FileBrowserScreenEvent()
 
     data class ShowSnackBarMessage(val message:StringUiWrapper): FileBrowserScreenEvent()
 }
