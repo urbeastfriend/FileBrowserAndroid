@@ -4,15 +4,15 @@
 
 
 File browser android application that allows to
-Navigate through file system,sort files, open files, share files.
+navigate through file system, sort files, open files, share files.
 Also there is a feature to check which files were modified since last time you opened this app.
 
 Tech stack:  
-- Kotlin\
-- MVVM\
-- Coroutines\
-- Flow\
-- WorkManager\
-- Room\
-- Dagger Hilt\
-- Jetpack navigation\
+- Kotlin
+- MVVM
+- Coroutines
+- Flow
+- WorkManager
+- Room
+- Dagger Hilt
+- Jetpack navigation
