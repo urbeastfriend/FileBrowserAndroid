@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
@@ -35,11 +36,23 @@ class FileHashesWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         val filesToHash = getFilesExcludingDirectoriesUseCase(path)
-        val localFileHashesList = filesHashDao.getFileHashList()
         val fileHashesList = filesToHash.map { FileHash(it.path, it.md5()) }
-        val distinctFilesList = fileHashesList.subtract(localFileHashesList.toSet())
 
+        val localFileHashesList = filesHashDao.getFileHashList()
 
+        val distinctFilesList = if(localFileHashesList.isEmpty()) emptyList() else fileHashesList.subtract(localFileHashesList.toSet())
+        Log.d("debugHash", "localfilehashes")
+        for(file in localFileHashesList){
+            Log.d("debugHash", file.fileHash)
+        }
+        Log.d("debugHash", "newfilehashes")
+        for(file in fileHashesList){
+            Log.d("debugHash", file.fileHash)
+        }
+        Log.d("debugHash", "distinct")
+        for(file in distinctFilesList){
+            Log.d("debugHash", file.fileHash)
+        }
         if (distinctFilesList.isNotEmpty()) {
             val modifiedFilesList = distinctFilesList.map { FileModified(filePath = it.filePath) }
             filesModifiedDao.dropTable()

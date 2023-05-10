@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         if (checkPermission()) {
             // permissions already granted
+            FileHashesWorker.start(applicationContext)
 
         } else {
             // permissions werent granted
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        FileHashesWorker.start(applicationContext)
+
 
 
     }
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         // Manage external storage permission granted
                         if (Environment.isExternalStorageManager()) {
-
+                            FileHashesWorker.start(applicationContext)
                         }
                         // Manage external storage permission denied
                         else {
@@ -114,6 +115,7 @@ class MainActivity : AppCompatActivity() {
                 val read = grantResults[1] == PackageManager.PERMISSION_GRANTED
 
                 if (write && read) {
+                    FileHashesWorker.start(applicationContext)
                     // External storage permissions granted
                 } else {
                     // External storage permissions denied
