@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filebrowserandroid.R
 import com.example.filebrowserandroid.common.FileInfo
-import com.example.filebrowserandroid.databinding.ItemFileBinding
 import com.example.filebrowserandroid.common.contains
+import com.example.filebrowserandroid.databinding.BrowserItemFileBinding
 import java.io.File
 
 
@@ -16,7 +16,7 @@ class FileRVAdapter(private val listener: OnFileClickListener) :
     ListAdapter<FileInfo, FileRVAdapter.FileViewHolder>(DiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileViewHolder {
-        val binding = ItemFileBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = BrowserItemFileBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return FileViewHolder(binding)
     }
 
@@ -25,7 +25,7 @@ class FileRVAdapter(private val listener: OnFileClickListener) :
         holder.bind(item)
     }
 
-    inner class FileViewHolder(private val binding: ItemFileBinding) :
+    inner class FileViewHolder(private val binding: BrowserItemFileBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -37,24 +37,33 @@ class FileRVAdapter(private val listener: OnFileClickListener) :
                         listener.onFileClick(file)
                     }
                 }
+                root.setOnLongClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION){
+                        val file = getItem(position)
+                        listener.onFileLongClick(file)
+
+                    }
+                    true
+                }
             }
         }
 
-        fun bind(file: FileInfo) {
-            val _file = File(file.filePath)
+        fun bind(_file: FileInfo) {
+            val file = File(_file.filePath)
 
-            if (_file.exists()) {
+            if (file.exists()) {
                 binding.apply {
                     val viewContext = fileImage.context
-                    fileName.text = file.fileName
+                    fileName.text = _file.fileName
 
-                    fileDateCreated.text = file.dateCreated
-                    if (_file.isDirectory) {
+                    fileDateCreated.text = _file.dateCreated
+                    if (file.isDirectory) {
                         fileImage.setImageResource(R.drawable.ic_folder)
                     } else {
-                        val fileSizeText = "${android.text.format.Formatter.formatFileSize(viewContext,file.fileSize)} | "
+                        val fileSizeText = "${android.text.format.Formatter.formatFileSize(viewContext,_file.fileSize)} | "
                         fileSize.text =  fileSizeText
-                        when (_file.extension) {
+                        when (file.extension) {
                             in Regex("((?i)(gif|png|jpeg|jpg))$") -> {
                                 fileImage.setImageResource(R.drawable.ic_image)
                             }
@@ -72,6 +81,8 @@ class FileRVAdapter(private val listener: OnFileClickListener) :
     interface OnFileClickListener {
 
         fun onFileClick(file: FileInfo)
+
+        fun onFileLongClick(file: FileInfo)
 
     }
     class DiffCallBack : DiffUtil.ItemCallback<FileInfo>() {

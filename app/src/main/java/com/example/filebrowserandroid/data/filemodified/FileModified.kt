@@ -1,14 +1,13 @@
-package com.example.filebrowserandroid.data
+package com.example.filebrowserandroid.data.filemodified
 
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
-@Entity(tableName = "filehash_table")
+@Entity(tableName = "filemodified_table")
 @Parcelize
-class FileHash(
+class FileModified (
     val filePath: String,
-    val fileHash: String,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
-) :Parcelable
+    ) : Parcelable

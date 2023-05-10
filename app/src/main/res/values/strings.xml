@@ -3,10 +3,15 @@
 
     <string name="featureFileBrowserBtnText">Файловый менеджер</string>
     <string name="featureModifiedFilesBtnText">Изменённые файлы</string>
+    <string name="modifiedFilesText">Изменённые файлы</string>
 
 
 
-
+    <string name="sortbyname">По имени</string>
+    <string name="sortbysizedesc">По уменьшению размера</string>
+    <string name="sortbysizeasc">По возрастанию размера</string>
+    <string name="sortbydatecreated">По дате создания</string>
+    <string name="sortbyextension">По расширению</string>
 
 
 

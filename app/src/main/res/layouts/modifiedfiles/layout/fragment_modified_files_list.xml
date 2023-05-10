@@ -3,29 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.filebrowser.FileBrowserFragment">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/design_default_color_primary"
-        android:elevation="4dp"
-
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-
-        <TextView
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:text="Сортировка"
-            android:layout_gravity="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </androidx.appcompat.widget.Toolbar>
+    tools:context=".ui.modifiedfileslist.ModifiedFileListFragment">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:visibility="visible"
@@ -36,12 +14,10 @@
         android:layout_height="50dp"/>
 
     <TextView
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:layout_below="@id/toolbar"
         android:paddingHorizontal="5dp"
         android:textSize="20sp"
-        tools:text="current path"
+        android:gravity="center"
+        android:text="@string/modifiedFilesText"
         android:id="@+id/path_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -56,10 +32,8 @@
         android:layout_below="@id/slider"
         android:paddingTop="5dp"
         android:paddingHorizontal="3dp"
-        android:id="@+id/filesRecyclerView"
+        android:id="@+id/modifiedFilesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-
 
 </RelativeLayout>

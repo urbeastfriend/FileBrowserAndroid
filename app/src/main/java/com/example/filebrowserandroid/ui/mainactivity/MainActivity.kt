@@ -14,7 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.work.*
+import androidx.navigation.NavController
 import com.example.filebrowserandroid.R
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,10 +23,12 @@ const val STORAGE_PERMISSION_CODE: Int = 100
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         if (checkPermission()) {
             // permissions already granted
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
 
         FileHashesWorker.start(applicationContext)
+
 
     }
 
@@ -137,6 +140,10 @@ class MainActivity : AppCompatActivity() {
 
             return write == PackageManager.PERMISSION_GRANTED && read == PackageManager.PERMISSION_GRANTED
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }
 

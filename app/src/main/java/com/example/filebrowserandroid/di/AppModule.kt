@@ -27,5 +27,8 @@ class AppModule {
     fun provideFilesHashDao(db: FilesDatabase) = db.filesHashDao()
 
     @Provides
+    fun provideFilesModifiedDao(db: FilesDatabase) = db.filesModifiedDao()
+
+    @Provides
     fun provideStoragePath() = Environment.getExternalStorageDirectory().path
 }

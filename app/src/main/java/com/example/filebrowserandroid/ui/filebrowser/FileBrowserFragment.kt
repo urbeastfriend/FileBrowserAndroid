@@ -2,19 +2,22 @@ package com.example.filebrowserandroid.ui.filebrowser
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import com.example.filebrowserandroid.BuildConfig
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.filebrowserandroid.BuildConfig
 import com.example.filebrowserandroid.R
 import com.example.filebrowserandroid.common.FileInfo
+import com.example.filebrowserandroid.common.SortOrder
 import com.example.filebrowserandroid.databinding.FragmentFilesBrowserBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +31,11 @@ class FileBrowserFragment : Fragment(R.layout.fragment_files_browser),
     FileRVAdapter.OnFileClickListener {
 
     private val viewModel: FileBrowserViewModel by viewModels()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,6 +52,38 @@ class FileBrowserFragment : Fragment(R.layout.fragment_files_browser),
                 setHasFixedSize(true)
                 isNestedScrollingEnabled = true
             }
+
+            toolbar.inflateMenu(R.menu.browser_menu)
+
+            toolbar.setNavigationOnClickListener{
+                findNavController().popBackStack()
+            }
+
+
+            toolbar.setOnMenuItemClickListener{
+                when (it.itemId) {
+                    R.id.action_sort_by_name -> {
+                        viewModel.onSortOrderSelected(SortOrder.BY_NAME)
+                        true
+                    }
+                    R.id.action_sort_by_size_asc -> {
+                        viewModel.onSortOrderSelected(SortOrder.BY_SIZE_ASC)
+                        true
+                    }
+                    R.id.action_sort_by_size_desc -> {
+                        viewModel.onSortOrderSelected(SortOrder.BY_SIZE_DESC)
+                        true
+                    }
+                    R.id.action_sort_by_date_created -> {
+                        viewModel.onSortOrderSelected(SortOrder.BY_DATE_CREATED)
+                        true
+                    }
+                    R.id.action_sort_by_extension -> {
+                        viewModel.onSortOrderSelected(SortOrder.BY_EXTENSION)
+                        true
+                    }
+                    else -> false
+            }}
         }
 
 
@@ -79,15 +119,18 @@ class FileBrowserFragment : Fragment(R.layout.fragment_files_browser),
                     viewModel.eventChannel.collect { event ->
                         when (event) {
                             is FileBrowserScreenEvent.OpenFile -> {
-                                try{
+                                try {
                                     val intent = Intent(Intent.ACTION_VIEW)
                                     val file = File(event.path)
-                                    val uriFromFile = FileProvider.getUriForFile(requireContext(),BuildConfig.APPLICATION_ID +".provider",file)
-                                    intent.setDataAndType(uriFromFile,file.getMimeType())
+                                    val uriFromFile = FileProvider.getUriForFile(
+                                        requireContext(),
+                                        BuildConfig.APPLICATION_ID + ".provider",
+                                        file
+                                    )
+                                    intent.setDataAndType(uriFromFile, file.getMimeType())
                                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                     startActivity(intent)
-                                }
-                                catch (e: ActivityNotFoundException){
+                                } catch (e: ActivityNotFoundException) {
                                     Snackbar.make(
                                         requireView(),
                                         R.string.couldntOpenFile,
@@ -111,6 +154,30 @@ class FileBrowserFragment : Fragment(R.layout.fragment_files_browser),
                                     )
                                 findNavController().navigate(action)
                             }
+                            is FileBrowserScreenEvent.ShareFile -> {
+                                try {
+                                    val file = File(event.path)
+                                    val intent = Intent(Intent.ACTION_SEND).apply {
+                                        type = "*/*"
+                                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                        putExtra(Intent.EXTRA_SUBJECT,"Sharing file")
+                                        putExtra(Intent.EXTRA_TEXT,"Sharing file from file browser app")
+
+                                        val uriFromFile = FileProvider.getUriForFile(
+                                            requireContext(),
+                                            BuildConfig.APPLICATION_ID + ".provider",
+                                            file
+                                        )
+
+                                        putExtra(Intent.EXTRA_STREAM,uriFromFile)
+                                    }
+
+                                    startActivity(intent)
+                                }
+                                catch (e: Exception){
+                                    e.message?.let { Log.d("random exception", it) }
+                                }
+                            }
                         }
                     }
                 }
@@ -120,10 +187,15 @@ class FileBrowserFragment : Fragment(R.layout.fragment_files_browser),
 
         }
 
+
     }
 
     override fun onFileClick(file: FileInfo) {
         viewModel.onFileClick(file.filePath)
+    }
+
+    override fun onFileLongClick(file: FileInfo) {
+        viewModel.onLongClick(file.filePath)
     }
 }
 

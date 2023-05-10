@@ -9,4 +9,6 @@ sealed class FileBrowserScreenEvent  {
     data class NavigateToDirectory(val path:String): FileBrowserScreenEvent()
 
     data class ShowSnackBarMessage(val message:StringUiWrapper): FileBrowserScreenEvent()
+
+    data class ShareFile(val path:String): FileBrowserScreenEvent()
 }

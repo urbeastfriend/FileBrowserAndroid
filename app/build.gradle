@@ -41,9 +41,9 @@ android {
 
     sourceSets {
         main {
-            res {
-                srcDirs  'src\\main\\res\\layouts\\filebrowser', 'src\\main\\res'
-            }
+            res.srcDirs = [
+                  'src\\main\\res\\layouts\\filebrowser', 'src\\main\\res\\layouts\\modifiedfiles', 'src\\main\\res'
+            ]
         }
     }
 }

@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.filebrowserandroid.common.FileInfoMapper
 import com.example.filebrowserandroid.common.Response
-import com.example.filebrowserandroid.data.FilesHashDao
+import com.example.filebrowserandroid.common.SortOrder
+import com.example.filebrowserandroid.data.filehash.FilesHashDao
 import com.example.filebrowserandroid.usecases.CheckPathIsDirectoryUseCase
 import com.example.filebrowserandroid.usecases.GetDirectoryFilesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 @HiltViewModel
@@ -78,6 +81,42 @@ class FileBrowserViewModel @Inject constructor(
     }
 
 
+    fun onSortOrderSelected(sortOrder: SortOrder){
+        val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm")
+        val state = _screenState.value
+
+        when(sortOrder){
+            SortOrder.BY_NAME -> {
+                _screenState.value = _screenState.value.copy(
+                    fileList = state.fileList.sortedBy { it.fileName }
+                )
+            }
+            SortOrder.BY_SIZE_ASC -> {
+                _screenState.value = _screenState.value.copy(
+                    fileList =state.fileList.sortedBy {
+                    it.fileSize
+                })
+            }
+            SortOrder.BY_SIZE_DESC -> {
+                _screenState.value = _screenState.value.copy(
+                    fileList =state.fileList.sortedByDescending {
+                    it.fileSize
+                })
+            }
+            SortOrder.BY_DATE_CREATED -> {
+                _screenState.value = _screenState.value.copy(
+                    fileList =state.fileList.sortedByDescending {
+                    formatter.parse(it.dateCreated)
+                })
+            }
+            SortOrder.BY_EXTENSION -> {
+                _screenState.value = _screenState.value.copy(
+                    fileList =state.fileList.sortedBy {
+                    File(it.filePath).extension
+                })
+            }
+        }
+    }
     fun onFileClick(path: String){
         if(checkPathIsDirectoryUseCase(path)) {
             viewModelScope.launch {
@@ -87,6 +126,15 @@ class FileBrowserViewModel @Inject constructor(
         else{
             viewModelScope.launch {
                 _eventChannel.send(FileBrowserScreenEvent.OpenFile(path))
+            }
+        }
+    }
+
+    fun onLongClick(path:String){
+        if(!checkPathIsDirectoryUseCase(path))
+        {
+            viewModelScope.launch {
+                _eventChannel.send(FileBrowserScreenEvent.ShareFile(path))
             }
         }
     }
